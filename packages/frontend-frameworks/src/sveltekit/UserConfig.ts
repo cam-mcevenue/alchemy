@@ -173,12 +173,15 @@ export const makeSvelteKitConfigPlugin = (
           );
         }
         const svelteConfig = (setup.api as SetupPluginApi | undefined)?.options;
-        const kit = svelteConfig?.kit;
-        if (kit === undefined || !isPlainObject(kit)) {
+        const kit = isPlainObject(svelteConfig?.kit)
+          ? svelteConfig.kit
+          : svelteConfig;
+
+        if (!isPlainObject(kit)) {
           throw new Error(
             `The "${SVELTEKIT_SETUP_PLUGIN_NAME}" plugin does not expose its config as ` +
-              "`api.options.kit` — the installed @sveltejs/kit version is incompatible " +
-              "with this integration's adapter injection.",
+              "`api.options` or `api.options.kit` — the installed @sveltejs/kit version " +
+              "is incompatible with this integration's adapter injection.",
           );
         }
         if (options.kit !== undefined) {
